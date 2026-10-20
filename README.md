@@ -161,3 +161,6 @@ Project Repository: [SignSpeak AI](https://github.com/kuvaleshcd-hue/signspeak-a
 ⭐ If you find this project interesting, consider starring the repository.
 
 **Built with Python, Computer Vision, and a vision for accessible communication.**
+
+just i add the read me file
+
