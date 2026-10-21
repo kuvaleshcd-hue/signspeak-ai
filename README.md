@@ -1,126 +1,140 @@
-# SignSpeak AI — reference-based starter
-
-This version removes the requirement to train a classifier on your own A/B/C CSV before opening the web app. It uses MediaPipe hand landmarks and a simple configurable landmark-rule recognizer for a useful subset of static ASL letters, then builds text and browser speech.
-
-**Honest limitation:** an alphabet poster is not a labeled landmark dataset, and this rule-based starter is not a fully accurate A–Z ASL model. Finger-pose rules can confuse similar letters; J and Z require motion tracking and are not handled as static signs. Use it as a prototype, and verify/adjust the rules against your own webcam.
-
-## Recommended environment
-Python 3.11 on macOS.
-
-```bash
-python3.11 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-streamlit run app.py
-```
-
-If you already have an old project `.venv`, the safest approach is to create a fresh environment. Avoid mixing `opencv-python` with `opencv-python-headless`.
-
-## Features
-- Browser webcam capture (Streamlit camera input)
-- MediaPipe hand landmark extraction
-- Reference/rule-based prediction for a small set of static poses
-- Editable message text, add letter, space, backspace, clear
-- Browser text-to-speech
-
-## Important
-The starter's predictions are heuristic, not a pretrained ASL model. For robust A–Z recognition, replace `recognizer.py` with a trained model based on a real labeled ASL dataset or collect varied webcam examples. The app explicitly shows low-confidence/unsupported cases rather than claiming full accuracy.
-
-
-
-# 🤟 SignSpeak AI — Sign Language Recognition System
+# 🤟 SignSpeak AI — Real-time Hand Sign Recognition
 
 **Breaking communication barriers through Artificial Intelligence and Computer Vision.**
 
-SignSpeak AI is an AI-powered project designed to recognize hand gestures and help convert sign language into understandable text. The goal is to make communication more accessible for people who use sign language.
+SignSpeak AI translates American Sign Language (ASL) static letters and expressive hand gestures into text and spoken audio using Google MediaPipe and geometric 3D landmark kinematics.
 
 ## 📌 Project Overview
 
-SignSpeak AI uses computer vision to detect and analyze hand gestures through a camera. By identifying hand landmarks and processing gesture information, the system aims to recognize signs and display their corresponding meaning.
+SignSpeak AI uses computer vision to detect and analyze hand gestures through a camera. By identifying hand landmarks and processing gesture information, the system recognizes signs and displays their corresponding meaning — then lets you build sentences and hear them spoken aloud.
 
-## ✨ Features
+## 🚀 Quick Start
 
-- ✋ **Hand Gesture Detection** — Detects hands using computer vision.
-- 👁️ **Real-Time Recognition** — Designed to process gestures through a live camera feed.
-- 🤖 **AI Integration** — Supports gesture recognition using machine learning techniques.
-- 📝 **Text Conversion** — Displays the recognized sign as text.
-- ♿ **Accessibility Focused** — Aims to reduce communication barriers.
-- 💻 **Python-Based Development** — Uses Python and relevant computer vision libraries.
-
-## 🛠️ Technologies Used
-
-- Python
-- MediaPipe
-- OpenCV
-- Machine Learning
-- Computer Vision
-
-*Note: Technologies and features may vary depending on the current implementation.*
-
-## ⚙️ Installation and Setup
+Ensure you have Python 3.11 installed.
 
 ### 1. Clone the repository
 
 ```bash
 git clone https://github.com/kuvaleshcd-hue/signspeak-ai.git
-```
-
-### 2. Navigate to the project directory
-
-```bash
 cd signspeak-ai
 ```
 
-### 3. Create a virtual environment
-
-```bash
-python3 -m venv .venv
-```
-
-### 4. Activate the virtual environment
+### 2. Create and activate a virtual environment
 
 **macOS / Linux**
 
 ```bash
+python3.11 -m venv .venv
 source .venv/bin/activate
 ```
 
 **Windows**
 
 ```bash
+python -m venv .venv
 .venv\Scripts\activate
 ```
 
-### 5. Install dependencies
-
-If your repository contains a `requirements.txt` file, run:
+### 3. Install dependencies
 
 ```bash
-python -m pip install -r requirements.txt
+python -m pip install --upgrade pip
+pip install -r requirements.txt
 ```
 
-Otherwise, install the required libraries listed in your project dependencies.
-
-## ▶️ Running the Project
-
-Run the Python entry-point file used by your application. For example, if your main file is `app.py`:
+### 4. Run unit tests
 
 ```bash
-python app.py
+python -m unittest test_recognizer.py
 ```
 
-Replace `app.py` with your actual main Python filename.
+### 5. Launch the Streamlit Web App
 
-If the application uses a webcam, grant camera permission when prompted.
+```bash
+streamlit run app.py
+```
+
+Open [http://localhost:8501](http://localhost:8501) in your browser.
+
+---
+
+## ✨ Features
+
+- **3 Ways to Try Hand Signs**:
+  1. 📸 **Webcam Snap**: Real-time camera snapshot.
+  2. 📁 **Image Upload**: Upload your own hand sign photos (JPG, PNG, WebP).
+  3. 🧪 **Try Sample Signs Simulator**: Test any supported sign instantly using interactive 3D kinematic landmarks without needing a camera.
+- **MediaPipe Hand Landmark Tracking**:
+  - Live 21-point skeleton tracking.
+  - Emerald green bounding box with Handedness badge (`Right Hand` / `Left Hand`).
+  - High-visibility fingertip and joint markers.
+- **17 Supported Hand Signs**:
+  - **ASL Letters**: `A`, `B`, `C`, `D`, `E`, `F (OK)`, `I`, `L`, `O`, `U`, `V (Peace)`, `W`, `Y (Hang Loose)`.
+  - **Expressive Gestures**: `🤟 ILY (I Love You)`, `👍 Thumbs Up`, `🖐️ Open Palm (Stop)`, `✊ Closed Fist / S`.
+- **Text Studio & Text-to-Speech**:
+  - Append recognized signs to an editable message.
+  - Space, backspace, punctuation, and clear controls.
+  - Browser text-to-speech audio synthesis via Web Speech API.
+- **Visual Reference Guide / Cheat Sheet**:
+  - Sidebar directory of all supported signs with finger-by-finger instructions.
+  - One-click "Try in Simulator" buttons.
+
+---
+
+## 🛠️ Technologies Used
+
+- Python
+- Streamlit
+- MediaPipe
+- OpenCV
+- NumPy
+- Web Speech API
+
+---
 
 ## 🔄 How It Works
 
-1. **Input:** Capture hand gestures using a camera.
-2. **Detection:** Detect hand landmarks using MediaPipe.
-3. **Processing:** Extract gesture information from the detected landmarks.
-4. **Recognition:** Identify the gesture using the implemented recognition logic or trained model.
-5. **Output:** Display the corresponding text when a supported sign is recognized.
+1. **Input:** Capture hand gestures using a camera, upload an image, or use the sample simulator.
+2. **Detection:** Detect hand landmarks using MediaPipe (21 3D keypoints per hand).
+3. **Processing:** Extract geometric features normalized by palm size for scale invariance.
+4. **Recognition:** Identify the sign using heuristic landmark-kinematic rules.
+5. **Output:** Display the recognized sign with confidence, build text, and speak it aloud.
+
+---
+
+## 🖐️ Hand Sign Reference Guide
+
+| Sign | Category | Emoji | Key Finger Pose |
+|---|---|---|---|
+| **A** | ASL Letter | ✊ | Fist with thumb upright resting alongside index finger |
+| **B** | ASL Letter | ✋ | 4 fingers straight up together, thumb folded across palm |
+| **C** | ASL Letter | 🤏 | Curved hand forming open 'C' arc shape |
+| **D** | ASL Letter | ☝️ | Index finger upright, other fingers curled touching thumb |
+| **E** | ASL Letter | ✊ | Fingertips curled down resting on top of folded thumb |
+| **F** | ASL Letter | 👌 | Thumb and index tips touching (OK sign), other 3 fingers extended |
+| **I** | ASL Letter | 🤙 | Pinky extended upright, other fingers curled |
+| **L** | ASL Letter | 👆 | Index upright, thumb extended horizontally at ~90° |
+| **O** | ASL Letter | ⭕ | All fingertips and thumb curved together forming an 'O' circle |
+| **U** | ASL Letter | ✌️ | Index and middle fingers extended upright touching together |
+| **V** | ASL Letter | ✌️ | Index and middle extended upright in a spread 'V' (Peace) |
+| **W** | ASL Letter | 🖖 | Index, middle, and ring extended and spread upright |
+| **Y** | ASL Letter | 🤙 | Thumb and pinky extended outward (Hang Loose / Shaka) |
+| **ILY** | Gesture | 🤟 | Thumb, index, and pinky extended simultaneously |
+| **THUMBS_UP** | Gesture | 👍 | Fist with thumb pointing upright into the air |
+| **OPEN_PALM** | Gesture | 🖐️ | Open hand with all 5 digits spread out |
+| **FIST** | Gesture | ✊ | All fingers and thumb curled into palm |
+
+---
+
+## 🧪 Testing
+
+Run the automated test suite verifying all 17 hand signs:
+
+```bash
+python -m unittest test_recognizer.py
+```
+
+---
 
 ## 🎯 Project Objectives
 
@@ -132,10 +146,8 @@ If the application uses a webcam, grant camera permission when prompted.
 ## 🚀 Future Improvements
 
 - Support more sign language gestures.
-- Add text-to-speech conversion.
 - Improve recognition accuracy through model training and testing.
-- Support dynamic gestures and sentence formation.
-- Develop a user-friendly web or mobile interface.
+- Support dynamic gestures (J, Z) and sentence formation.
 - Explore Indian Sign Language (ISL) support.
 
 ## 🤝 Contributing
@@ -161,6 +173,3 @@ Project Repository: [SignSpeak AI](https://github.com/kuvaleshcd-hue/signspeak-a
 ⭐ If you find this project interesting, consider starring the repository.
 
 **Built with Python, Computer Vision, and a vision for accessible communication.**
-
-just i add the read me file
-
